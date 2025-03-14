@@ -1,2 +1,2 @@
 # miscgeom
-Miscellaneous geometry computing routines
+Python library containing miscellaneous geometry computing routines.

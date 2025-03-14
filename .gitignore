@@ -1,0 +1,29 @@
+# blanket files to ignore
+**/__pycache__
+**/.DS_Store
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/.vscode
+**/.idea
+**/.venv
+**/.env
+
+# python files to ignore
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+*.pyc~
+*.pyo~
+*.pyd~
+*.pyw~
+
+# meson files to ignore
+**/build
+**/builddir
+**/dist
+**/meson-logs
+**/meson-private
