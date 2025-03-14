@@ -35,16 +35,25 @@ jobs:
           fi
         shell: bash
 
-      - name: Build wheels
+      - name: Build wheels on macOS
+        if: runner.os == 'macOS'
+        run: |
+          # Get NumPy include path and set CFLAGS
+          export CFLAGS="-I$(python -c 'import numpy as np; print(np.get_include())')"
+          echo "Using CFLAGS: $CFLAGS"
+          python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD: "cp312-* cp313-*"
+          CIBW_SKIP: "pp* *-musllinux*"
+          CIBW_BEFORE_BUILD: "pip install numpy>=2.0.0 meson-python"
+
+      - name: Build wheels on Linux and Windows
+        if: runner.os != 'macOS'
         run: python -m cibuildwheel --output-dir wheelhouse
         env:
-          CIBW_BUILD: "cp312-* cp313-*"  # Python versions to build for
-          # Skip PyPy since your package has C extensions with Meson
+          CIBW_BUILD: "cp312-* cp313-*"
           CIBW_SKIP: "pp* *-musllinux*"
-          # Pre-install NumPy before building - important for your C extension
           CIBW_BEFORE_BUILD: "pip install numpy>=2.0.0 meson-python"
-          # For macOS, ensure NumPy headers are available
-          CIBW_ENVIRONMENT_MACOS: "CFLAGS='-I$(python -c \"import numpy as np; print(np.get_include())\")'"
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
