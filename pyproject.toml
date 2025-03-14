@@ -29,5 +29,5 @@ dev = [
 build-verbosity = 1
 skip = "pp* *-musllinux*"
 before-build = "pip install numpy>=2.0.0 meson-python"
-test-command = "pytest"
+test-command = "pytest {project}"
 test-requires = ["pytest"]
