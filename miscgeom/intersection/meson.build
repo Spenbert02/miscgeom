@@ -24,7 +24,6 @@ py.install_sources(
 
 py.install_sources(
     [
-        'tests/__init__.py',
         'tests/test_intersection.py'
     ],
     subdir: 'miscgeom/intersection/tests',
