@@ -46,6 +46,7 @@ jobs:
           CIBW_BUILD: "cp312-* cp313-*"
           CIBW_SKIP: "pp* *-musllinux*"
           CIBW_BEFORE_BUILD: "pip install numpy>=2.0.0 meson-python"
+          CIBW_BUILD_VERBOSITY: 3
 
       - name: Build wheels on Linux and Windows
         if: runner.os != 'macOS'
@@ -54,6 +55,7 @@ jobs:
           CIBW_BUILD: "cp312-* cp313-*"
           CIBW_SKIP: "pp* *-musllinux*"
           CIBW_BEFORE_BUILD: "pip install numpy>=2.0.0 meson-python"
+          CIBW_BUILD_VERBOSITY: 3
 
       - name: Upload wheels
         uses: actions/upload-artifact@v4
