@@ -9,6 +9,9 @@
 **/.venv
 **/.env
 
+# if using pyenv for virtual environments
+.python-version
+
 # python files to ignore
 *.pyc
 *.pyo

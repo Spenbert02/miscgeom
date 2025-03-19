@@ -29,18 +29,26 @@ output:
 */
 int intersectsCylinder(double *cyl_path, double *other_path, int size_cyl, int size_other, double sweep_diameter) {
     // creating local copies for easier indexing - if this takes too much time, can try not doing this
-    double local_cyl_path[size_cyl][3];
+    double (*local_cyl_path)[3] = malloc(size_cyl * sizeof(double[3]));
+    if (!local_cyl_path) {  // ensure memory allocation was successful
+        return -1;
+    }
     for (int i = 0; i < size_cyl; i++) {
         for (int j = 0; j < 3; j++) {
             local_cyl_path[i][j] = cyl_path[i*3 + j];
         }
     }
-    double local_other_path[size_other][3];
+
+    double (*local_other_path)[3] = malloc(size_other * sizeof(double[3]));
+    if (!local_other_path) {  // ensure memory allocation was successful
+        return -1;
+    }
     for (int i = 0; i < size_other; i++) {
         for (int j = 0; j < 3; j++) {
             local_other_path[i][j] = other_path[i*3 + j];
         }
     }
+
 
     // iterating over each segment in the cylinder array
     for (int i = 0; i < size_cyl - 1; i++) {  // with size_cyl # of points, there are size_cyl-1 # of segments
@@ -76,12 +84,16 @@ int intersectsCylinder(double *cyl_path, double *other_path, int size_cyl, int s
             double otherp1[3] = {local_other_path[j][0], local_other_path[j][1], local_other_path[j][2]};
             double otherp2[3] = {local_other_path[j+1][0], local_other_path[j+1][1], local_other_path[j+1][2]};
             if (segmentIntersectsCylinder(otherp1, otherp2, p1, p2, n1, n2, sweep_diameter)) {  // the current segments intersects the bounding cylinder
+                free(local_cyl_path);
+                free(local_other_path);
                 return(1);
             }
         }
     }
 
     // at this point, all of the segment pairs have been checked for intersection, and no intersections have been found
+    free(local_cyl_path);
+    free(local_other_path);
     return(0);
 }
 
