@@ -37,6 +37,7 @@ jobs:
 
       - name: Build wheels on macOS
         if: runner.os == 'macOS'
+        shell: bash
         run: |
           # Get NumPy include path and set CFLAGS
           export CFLAGS="-I$(python -c 'import numpy as np; print(np.get_include())')"
@@ -50,6 +51,7 @@ jobs:
 
       - name: Build wheels on Windows
         if: runner.os == 'Windows'
+        shell: bash
         run: |
           NUMPY_INCLUDE=$(python -c 'import numpy as np; print(np.get_include())')
           echo "NUMPY_INCLUDE=$NUMPY_INCLUDE" >> $GITHUB_ENV
@@ -64,6 +66,7 @@ jobs:
       
       - name: Build wheels on Linux
         if: runner.os == 'Linux'
+        shell: bash
         run: |
           python -m cibuildwheel --output-dir wheelhouse
         env:
