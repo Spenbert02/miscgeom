@@ -6,84 +6,128 @@ on:
       - 'v*'
   workflow_dispatch:  # Allow manual triggering
 
+
 jobs:
-  build_wheels:
-    name: Build wheels on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+  # Build wheels on Linux
+  build_linux_wheels:
+    name: Build python ${{ matrix.cibw_python }} ${{matrix.cibw_arch}} wheels on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
+        cibw_python: ["cp312-*", "cp313-*"]
+        cibw_arch: ["x86_64", "aarch64"]
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
-          python-version: '3.12'
+          python-version: ${{ matrix.cibw_python }}
 
       - name: Install cibuildwheel
-        run: python -m pip install cibuildwheel==2.16.2
+        run: python -m pip install cibuildwheel
+
+      - name: Install build dependencies
+        shell: bash
+        run: |
+          python -m pip install numpy>=2.0.0 meson-python
+
+      - name: Build the wheel
+        shell: bash
+        run: |
+          python -m cibuildwheel --output-dir dist
+        env:
+          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
+          CIBW_SKIP: "*-musllinux*"
+          CIBW_TEST_SKIP: "*"
+
+      - name: Upload the wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.cibw_python }}-${{ matrix.cibw_arch }}
+          path: ./dist/*.whl
+
+
+  # Build wheels on macOS
+  build_osx_wheels:
+    name: Build python ${{ matrix.cibw_python }} ${{matrix.cibw_arch}} wheels on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [macos-latest]
+        cibw_python: ["cp312-*", "cp313-*"]
+        include:
+          - os: macos-latest
+            cibw_arch: x86_64
+          - os: macos-14
+            cibw_arch: arm64
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.cibw_python }}
+
+      - name: Install cibuildwheel
+        run: python -m pip install cibuildwheel
 
       - name: Install build dependencies
         run: |
           python -m pip install numpy>=2.0.0 meson-python
-          # On Linux, install additional build dependencies
-          if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt-get update
-            sudo apt-get install -y build-essential
-          fi
-        shell: bash
 
-      - name: Build wheels on macOS
-        if: runner.os == 'macOS'
+      - name: Build the wheel
         shell: bash
         run: |
-          # Get NumPy include path and set CFLAGS
-          export CFLAGS="-I$(python -c 'import numpy as np; print(np.get_include())')"
-          echo "Using CFLAGS: $CFLAGS"
-          python -m cibuildwheel --output-dir wheelhouse
+          python -m cibuildwheel --output-dir dist
         env:
-          CIBW_BUILD: "cp312-* cp313-*"
-          CIBW_SKIP: "pp* *-musllinux*"
-          CIBW_BEFORE_BUILD: "pip install numpy>=2.0.0 meson-python"
-          CIBW_BUILD_VERBOSITY: 3
-
-      - name: Build wheels on Windows
-        if: runner.os == 'Windows'
-        shell: bash
-        run: |
-          NUMPY_INCLUDE=$(python -c 'import numpy as np; print(np.get_include())')
-          echo "NUMPY_INCLUDE=$NUMPY_INCLUDE" >> $GITHUB_ENV
-          echo "CFLAGS=-I$NUMPY_INCLUDE" >> $GITHUB_ENV
-          echo "Using CFLAGS: $CFLAGS"
-          python -m cibuildwheel --output-dir wheelhouse
-        env:
-          CIBW_BUILD: "cp312-* cp313-*"
-          CIBW_SKIP: "pp* *-musllinux*"
-          CIBW_BEFORE_BUILD: "pip install numpy>=2.0.0 meson-python"
-          CIBW_BUILD_VERBOSITY: 3
+          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
+          CIBW_TEST_SKIP: "*"
       
-      - name: Build wheels on Linux
-        if: runner.os == 'Linux'
-        shell: bash
-        run: |
-          python -m cibuildwheel --output-dir wheelhouse
-        env:
-          CIBW_BUILD: "cp312-* cp313-*"
-          CIBW_SKIP: "pp* *-musllinux*"
-          CIBW_BEFORE_BUILD: "pip install numpy>=2.0.0 meson-python"
-          CIBW_BUILD_VERBOSITY: 3
-
-      - name: Upload wheels
+      - name: Upload the wheel
         uses: actions/upload-artifact@v4
         with:
-          name: wheels
-          path: ./wheelhouse/*.whl
-    
-      - name: Upload to PyPI
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-        uses: pypa/gh-action-pypi-publish@release/v1
+          name: wheels-${{ matrix.cibw_python }}-${{ matrix.cibw_arch }}
+          path: ./dist/*.whl
+  
+
+  # Build wheels on Windows
+  build_windows_wheels:
+    name: Build python ${{ matrix.cibw_python }} ${{matrix.cibw_arch}} wheels on ${{matrix.os}}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [windows-latest]
+        cibw_python: ["cp312-*", "cp313-*"]
+        cibw_arch: ["AMD64"]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
         with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          packages-dir: wheelhouse/
+          python-version: ${{ matrix.cibw_python }}
+
+      - name: Install cibuildwheel
+        run: python -m pip install cibuildwheel
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install numpy>=2.0.0 meson-python
+
+      - name: Build the wheel
+        shell: bash
+        run: |
+          python -m cibuildwheel --output-dir dist
+        env:
+          CIBW_BUILD: ${{ matrix.cibw_python }}
+          CIBW_ARCHS_WINDOWS: ${{ matrix.cibw_arch }}
+
+      - name: Upload the wheel
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.cibw_python }}-${{ matrix.cibw_arch }}
+          path: ./dist/*.whl
