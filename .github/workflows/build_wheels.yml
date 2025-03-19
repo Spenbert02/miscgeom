@@ -35,11 +35,36 @@ jobs:
           fi
         shell: bash
 
-      - name: Build wheels
+      - name: Build wheels on macOS
+        if: runner.os == 'macOS'
         run: |
           # Get NumPy include path and set CFLAGS
           export CFLAGS="-I$(python -c 'import numpy as np; print(np.get_include())')"
           echo "Using CFLAGS: $CFLAGS"
+          python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD: "cp312-* cp313-*"
+          CIBW_SKIP: "pp* *-musllinux*"
+          CIBW_BEFORE_BUILD: "pip install numpy>=2.0.0 meson-python"
+          CIBW_BUILD_VERBOSITY: 3
+
+      - name: Build wheels on Windows
+        if: runner.os == 'Windows'
+        run: |
+          NUMPY_INCLUDE=$(python -c 'import numpy as np; print(np.get_include())')
+          echo "NUMPY_INCLUDE=$NUMPY_INCLUDE" >> $GITHUB_ENV
+          echo "CFLAGS=-I$NUMPY_INCLUDE" >> $GITHUB_ENV
+          echo "Using CFLAGS: $CFLAGS"
+          python -m cibuildwheel --output-dir wheelhouse
+        env:
+          CIBW_BUILD: "cp312-* cp313-*"
+          CIBW_SKIP: "pp* *-musllinux*"
+          CIBW_BEFORE_BUILD: "pip install numpy>=2.0.0 meson-python"
+          CIBW_BUILD_VERBOSITY: 3
+      
+      - name: Build wheels on Linux
+        if: runner.os == 'Linux'
+        run: |
           python -m cibuildwheel --output-dir wheelhouse
         env:
           CIBW_BUILD: "cp312-* cp313-*"
