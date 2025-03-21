@@ -19,9 +19,18 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: true
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install build
+
       - name: Make source dist
         run: |
-          pipx run build --sdist
+          python -m build --sdist
 
       - name: Get version info
         run: |
@@ -106,8 +115,8 @@ jobs:
 
   # Build wheels on macOS
   build_osx_wheels:
-    name: Build python ${{ matrix.cibw_python }} ${{matrix.cibw_arch}} wheels on ${{matrix.os}}
-    runs-on: ${{matrix.os}}
+    name: Build python ${{ matrix.config.cibw_python }} ${{matrix.config.cibw_arch}} wheels on ${{matrix.config.os}}
+    runs-on: ${{matrix.config.os}}
     strategy:
       matrix:
         config:
@@ -143,14 +152,14 @@ jobs:
         run: |
           python -m cibuildwheel --output-dir dist
         env:
-          CIBW_BUILD: ${{ matrix.cibw_python }}
-          CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
+          CIBW_BUILD: ${{ matrix.config.cibw_python }}
+          CIBW_ARCHS_MACOS: ${{ matrix.config.cibw_arch }}
 
       - name: Set version info
         shell: bash
         run: |
           # Extract Python version
-          echo "PY_VERSION=$(echo ${{ matrix.cibw_python }} | cut -d- -f1)" >> $GITHUB_ENV
+          echo "PY_VERSION=$(echo ${{ matrix.config.cibw_python }} | cut -d- -f1)" >> $GITHUB_ENV
           
           # Set version suffix based on tag or branch
           if [[ "${{ github.ref_type }}" == "tag" && "${{ github.ref }}" == refs/tags/v* ]]; then
@@ -165,7 +174,7 @@ jobs:
       - name: Upload the wheel
         uses: actions/upload-artifact@v4
         with:
-          name: miscgeom-${{ env.VERSION_SUFFIX }}${{ env.PY_VERSION }}-macosx-${{ matrix.cibw_arch }}
+          name: miscgeom-${{ env.VERSION_SUFFIX }}${{ env.PY_VERSION }}-macosx-${{ matrix.config.cibw_arch }}
           path: ./dist/*.whl
   
 
