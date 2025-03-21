@@ -22,7 +22,7 @@ jobs:
       - name: Make source dist
         run: |
           pipx run build --sdist
-            - name: Set version info
+
       - name: Get version info
         run: |
           # Set version suffix based on tag or branch
@@ -101,7 +101,7 @@ jobs:
       - name: Upload the wheel
         uses: actions/upload-artifact@v4
         with:
-          name: miscgeom-${{ env.VERSION_SUFFIX }}${{ env.PY_VERSION }}-manylinux-${{ matrix.cibw_arch }}
+          name: miscgeom-${{ env.VERSION_SUFFIX }}${{ env.PY_VERSION }}-${{ matrix.cibw_manylinux }}-${{ matrix.cibw_arch }}
           path: ./dist/*.whl
 
   # Build wheels on macOS
@@ -110,13 +110,19 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        os: [macos-latest]
-        cibw_python: ["cp312-*", "cp313-*"]
-        include:
+        config:
           - os: macos-latest
             cibw_arch: x86_64
+            cibw_python: "cp312-*"
+          - os: macos-latest
+            cibw_arch: x86_64
+            cibw_python: "cp313-*"
           - os: macos-14
             cibw_arch: arm64
+            cibw_python: "cp312-*"
+          - os: macos-14
+            cibw_arch: arm64
+            cibw_python: "cp313-*"
     
     steps:
       - uses: actions/checkout@v4
