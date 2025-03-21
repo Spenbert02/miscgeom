@@ -156,18 +156,20 @@ jobs:
           name: wheel-${{ env.PY_VERSION }}-${{ matrix.os }}-${{ matrix.cibw_arch }}
           path: ./dist/*.whl
 
-  # publish to test pypi
-  publish_to_test_pypi:
+  # publish to pypi
+  publish_to_pypi:
+    name: Publish to PyPI
+    if: startsWith(github.ref, 'refs/tags/v')
     needs:
       - build_linux_wheels
       - build_osx_wheels
       - build_windows_wheels
-    name: Publish to TestPyPI
+
     runs-on: ubuntu-latest
 
     environment:
-      name: testpypi
-      url: https://test.pypi.org/p/miscgeom
+      name: pypi
+      url: https://pypi.org/p/miscgeom
     
     permissions:
       id-token: write
@@ -179,7 +181,5 @@ jobs:
           path: dist/
           pattern: wheel-*.whl
 
-      - name: Publish to TestPyPI
+      - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository_url: https://test.pypi.org/legacy/
