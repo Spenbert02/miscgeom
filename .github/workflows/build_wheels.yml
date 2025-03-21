@@ -2,6 +2,8 @@ name: Build Wheels
 
 on:
   push:
+    branches:
+      - 'main'
     tags:
       - 'v*'
   workflow_dispatch:  # Allow manual triggering
@@ -51,7 +53,7 @@ jobs:
       - name: Upload the wheel
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ env.PY_VERSION }}-${{ matrix.cibw_arch }}
+          name: wheels-${{ env.PY_VERSION }}-${{ matrix.os }}-${{ matrix.cibw_arch }}
           path: ./dist/*.whl
 
 
@@ -100,7 +102,7 @@ jobs:
       - name: Upload the wheel
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ env.PY_VERSION }}-${{ matrix.cibw_arch }}
+          name: wheels-${{ env.PY_VERSION }}-${{ matrix.os }}-${{ matrix.cibw_arch }}
           path: ./dist/*.whl
   
 
@@ -144,5 +146,5 @@ jobs:
       - name: Upload the wheel
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ env.PY_VERSION }}-${{ matrix.cibw_arch }}
+          name: wheels-${{ env.PY_VERSION }}-${{ matrix.os }}-${{ matrix.cibw_arch }}
           path: ./dist/*.whl
