@@ -64,7 +64,6 @@ jobs:
           name: wheels-${{ env.PY_VERSION }}-${{ matrix.os }}-${{ matrix.cibw_arch }}
           path: ./dist/*.whl
 
-
   # Build wheels on macOS
   build_osx_wheels:
     name: Build python ${{ matrix.cibw_python }} ${{matrix.cibw_arch}} wheels on ${{matrix.os}}
@@ -156,3 +155,27 @@ jobs:
         with:
           name: wheels-${{ env.PY_VERSION }}-${{ matrix.os }}-${{ matrix.cibw_arch }}
           path: ./dist/*.whl
+
+  # publish to test pypi
+  publish_to_test_pypi:
+    name: Publish to TestPyPI
+    runs-on: ubuntu-latest
+
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/miscgeom
+    
+    permissions:
+      id-token: write
+    
+    steps:
+      - name: Download all dists
+        uses: actions/download-artifact@v4
+        with:
+          name: python-package-distributions
+          path: dist/
+
+      - name: Publish to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository_url: https://test.pypi.org/legacy/
