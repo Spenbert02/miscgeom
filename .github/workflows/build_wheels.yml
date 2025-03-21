@@ -178,6 +178,7 @@ jobs:
       - name: Download all dists
         uses: actions/download-artifact@v4
         with:
+          name: wheel-${{ env.PY_VERSION }}-${{ matrix.os }}-${{ matrix.cibw_arch }}
           path: dist/
           pattern: wheel-*.whl
 
