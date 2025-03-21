@@ -49,6 +49,7 @@ jobs:
           path: dist/*.tar.gz
   
   build_wheels:
+    needs: make_sdist
     name: Build wheels for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
