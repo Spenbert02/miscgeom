@@ -42,11 +42,16 @@ jobs:
           CIBW_ARCHS_LINUX: ${{ matrix.cibw_arch }}
           CIBW_SKIP: "*-musllinux*"
           CIBW_TEST_SKIP: "*"
+      
+      - name: Rename python version
+        shell: bash
+        run: |
+          echo "PY_VERSION=$(echo ${{ matrix.cibw_python }} | cut -d- -f1)" >> $GITHUB_ENV
 
       - name: Upload the wheel
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.cibw_python }}-${{ matrix.cibw_arch }}
+          name: wheels-${{ env.PY_VERSION }}-${{ matrix.cibw_arch }}
           path: ./dist/*.whl
 
 
@@ -86,11 +91,16 @@ jobs:
           CIBW_BUILD: ${{ matrix.cibw_python }}
           CIBW_ARCHS_MACOS: ${{ matrix.cibw_arch }}
           CIBW_TEST_SKIP: "*"
+
+      - name: Rename python version
+        shell: bash
+        run: |
+          echo "PY_VERSION=$(echo ${{ matrix.cibw_python }} | cut -d- -f1)" >> $GITHUB_ENV
       
       - name: Upload the wheel
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.cibw_python }}-${{ matrix.cibw_arch }}
+          name: wheels-${{ env.PY_VERSION }}-${{ matrix.cibw_arch }}
           path: ./dist/*.whl
   
 
@@ -126,8 +136,13 @@ jobs:
           CIBW_BUILD: ${{ matrix.cibw_python }}
           CIBW_ARCHS_WINDOWS: ${{ matrix.cibw_arch }}
 
+      - name: Rename python version
+        shell: bash
+        run: |
+          echo "PY_VERSION=$(echo ${{ matrix.cibw_python }} | cut -d- -f1)" >> $GITHUB_ENV
+
       - name: Upload the wheel
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-${{ matrix.cibw_python }}-${{ matrix.cibw_arch }}
+          name: wheels-${{ env.PY_VERSION }}-${{ matrix.cibw_arch }}
           path: ./dist/*.whl
