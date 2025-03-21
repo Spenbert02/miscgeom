@@ -1,4 +1,5 @@
 name: Build Wheels
+run-name: ${{ github.event_name == 'workflow_dispatch' && 'Manual Build Wheels' || github.ref_type == 'tag' && format('Build Wheels for tag {0}', github.ref_name) || format('Build Wheels for {0}', github.ref_name) }}
 
 on:
   push:
@@ -10,33 +11,9 @@ on:
 
 
 jobs:
-  # set the run name
-  init:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Set run name
-        run: |
-          if [[ "${{ github.ref_type }}" == "tag" ]]; then
-            echo "RUN_NAME=Build Wheels for tag ${{ github.ref_name }} - $(date +'%Y-%m-%d %H:%M')" >> $GITHUB_ENV
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            echo "RUN_NAME=Manual Build Wheels - $(date +'%Y-%m-%d %H:%M')" >> $GITHUB_ENV
-          else
-            echo "RUN_NAME=Build Wheels for ${{ github.ref_name }} - $(date +'%Y-%m-%d %H:%M')" >> $GITHUB_ENV
-          fi
-      - name: Update run name
-        uses: actions/github-script@v7
-        with:
-          script: |
-            github.rest.actions.updateWorkflowRun({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              run_id: context.runId,
-              name: process.env.RUN_NAME
-            })
 
   # Build wheels on Linux
   build_linux_wheels:
-    needs: init
     name: Build python ${{ matrix.cibw_python }} ${{matrix.cibw_arch}} wheels on ${{matrix.os}}
     runs-on: ${{matrix.os}}
     strategy:
@@ -90,7 +67,6 @@ jobs:
 
   # Build wheels on macOS
   build_osx_wheels:
-    needs: init
     name: Build python ${{ matrix.cibw_python }} ${{matrix.cibw_arch}} wheels on ${{matrix.os}}
     runs-on: ${{matrix.os}}
     strategy:
@@ -140,7 +116,6 @@ jobs:
 
   # Build wheels on Windows
   build_windows_wheels:
-    needs: init
     name: Build python ${{ matrix.cibw_python }} ${{matrix.cibw_arch}} wheels on ${{matrix.os}}
     runs-on: ${{matrix.os}}
     strategy:
