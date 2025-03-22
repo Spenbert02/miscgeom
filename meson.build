@@ -1,6 +1,6 @@
 # meson.build
 
-project('miscgeom', 'c', version: '0.0.1', meson_version: '>=1.2.0')
+project('miscgeom', 'c', version: '0.0.2', meson_version: '>=1.2.0')
 
 py = import('python').find_installation(pure: false)
 
