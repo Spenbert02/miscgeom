@@ -19,6 +19,14 @@ def test_cyl_int():
     assert res == False
 
 
+# def test_cyl_int_identical():
+#     cyl_ax = np.array([[0, 0, 0], [1, 1, 1]])
+#     curve = np.array([[0, 0, 0], [1, 1, 1]])
+#     d = 1
+#     res = sweptCylinderCurveIntersects(cyl_ax, curve, d)
+#     assert res == True
+
+
 def test_cyl_mesh():
     cyl_ax = np.array([[_x, np.pow(10, _x) / 10, 0] for _x in np.linspace(0, 1, 100)])
     d = 0.1

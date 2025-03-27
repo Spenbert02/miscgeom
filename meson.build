@@ -1,6 +1,15 @@
 # meson.build
 
-project('miscgeom', 'c', version: '0.0.2', meson_version: '>=1.2.0')
+project(
+    'miscgeom', 
+    ['c', 'cpp'], 
+    version: '0.0.2', 
+    meson_version: '>=1.2.0',
+    default_options: [
+        'c_std=c99', 
+        'cpp_std=c++17'
+    ]
+)
 
 py = import('python').find_installation(pure: false)
 
