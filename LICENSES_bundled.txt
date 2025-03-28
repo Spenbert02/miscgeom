@@ -1,0 +1,7 @@
+The miscgeom repository and source distributions bundle several libraries that are
+compatibly licensed.  We list these here.
+
+Name: Eigen
+Files: miscgeom/third_party/eigen/*
+License: 
+  For details, see miscgeom/third_party/eigen/LICENSE.txt

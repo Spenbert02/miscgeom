@@ -1,13 +1,13 @@
 # miscgeom/intersection/meson.build
 
-# Define the include directory for _c_core
-c_core_include = include_directories('../_c_core')
+# Define the include directory for c_core
+c_core_include = include_directories('../c_core')
 
 # C++ sources that need to be compiled and linked
 cpp_sources = [
-    '../_c_core/cyl_int_c_api.cpp', 
-    '../_c_core/cyl_int.cpp',
-    '../_c_core/utils.cpp'
+    '../c_core/cyl_int_c_api.cpp', 
+    '../c_core/cyl_int.cpp',
+    '../c_core/utils.cpp'
 ]
 
 fast_intersection = py.extension_module(
