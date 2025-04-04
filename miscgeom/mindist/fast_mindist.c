@@ -224,13 +224,13 @@ static PyMethodDef methods[] = {
 
 static struct PyModuleDef module = {
     PyModuleDef_HEAD_INIT,
-    "mindist",
+    "fast_mindist",
     NULL,
     -1,
     methods
 };
 
-PyMODINIT_FUNC PyInit_mindist(void) {
+PyMODINIT_FUNC PyInit_fast_mindist(void) {
     import_array();  // Initialize the NumPy C API
     return PyModule_Create(&module);
 }

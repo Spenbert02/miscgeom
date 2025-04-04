@@ -25,6 +25,12 @@ dev = [
     'pytest'
 ]
 
+doc = [
+    'sphinx>=7.0.0',
+    'sphinx-book-theme>=1.0.0',
+    'numpydoc>=1.6.0'
+]
+
 [tool.cibuildwheel]
 build-verbosity = 1
 skip = "pp* *-musllinux*"

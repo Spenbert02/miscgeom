@@ -12,9 +12,9 @@ cpp_sources = [
     '../c_core/utils.cpp'
 ]
 
-mindist = py.extension_module(
-    'mindist',
-    ['mindist.c'] + cpp_sources,  # Include C++ source files
+fast_mindist = py.extension_module(
+    'fast_mindist',
+    ['fast_mindist.c'] + cpp_sources,  # Include C++ source files
     include_directories: [
         numpy_include,
         c_core_include,

@@ -1,6 +1,6 @@
 import copy
 import numpy as np
-from . import fast_intersection
+from miscgeom.intersection import fast_intersection
 
 
 def sweptCylinderCurveIntersects(cyl_ax, curve, d):
