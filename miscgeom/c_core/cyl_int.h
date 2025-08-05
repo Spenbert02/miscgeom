@@ -5,6 +5,15 @@ Contains the definitions of the helper functions used to determine if a curve in
 
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+int intersectsCylinder(double *cyl_path, double *other_path, int size_cyl, int size_other, double sweep_diameter);
+
+#ifdef __cplusplus
+}
+#endif
 
 void fourPointNormals(double p0[], double p1[], double p2[], double p3[], double n1[], double n2[]);
 int segmentIntersectsCylinder(double p1[], double p2[], double c1[], double c2[], double n1[], double n2[], double d);

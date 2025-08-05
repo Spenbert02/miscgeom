@@ -1,4 +1,4 @@
-#include "Point3D.hpp"
+#include "Point3D.h"
 #include <math.h>
 
 

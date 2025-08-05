@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef __cplusplus
 
 class Point3D {
     public:
@@ -14,3 +15,5 @@ class Point3D {
         double norm();
         Point3D normalize();
 };
+
+#endif

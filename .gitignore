@@ -30,3 +30,6 @@
 **/dist
 **/meson-logs
 **/meson-private
+
+# testing file
+testing.py

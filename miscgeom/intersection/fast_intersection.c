@@ -3,7 +3,7 @@
 
 #include <Python.h>
 #include <numpy/arrayobject.h>
-#include "cyl_int_c_api.h"
+#include "cyl_int.h"
 
 
 /*

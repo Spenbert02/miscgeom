@@ -3,7 +3,7 @@
 
 #include <Python.h>
 #include <numpy/arrayobject.h>
-#include "mindist_c_api.h"
+#include "min_distance.h"
 
 
 static PyObject* cPointPoint(PyObject* self, PyObject* args) {

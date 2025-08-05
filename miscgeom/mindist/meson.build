@@ -6,7 +6,6 @@ eigen_include = include_directories('../third_party/eigen')
 
 # C++ sources that need to be compiled and linked
 cpp_sources = [
-    '../c_core/mindist_c_api.cpp', 
     '../c_core/min_distance.cpp',
     '../c_core/Point3D.cpp',
     '../c_core/utils.cpp'

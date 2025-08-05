@@ -5,7 +5,6 @@ c_core_include = include_directories('../c_core')
 
 # C++ sources that need to be compiled and linked
 cpp_sources = [
-    '../c_core/cyl_int_c_api.cpp', 
     '../c_core/cyl_int.cpp',
     '../c_core/utils.cpp'
 ]
